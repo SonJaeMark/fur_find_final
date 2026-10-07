@@ -23,6 +23,10 @@ class AuthError(FurFindException):
         super().__init__(message)
 
 
+# Alias AuthenticationError to AuthError for backwards compatibility across controllers
+AuthenticationError = AuthError
+
+
 class AuthorizationError(FurFindException):
     """Raised when a user attempts an action forbidden by their role (Role-Based Access Control)."""
     def __init__(self, message="Access denied. You do not have permission to perform this action."):
