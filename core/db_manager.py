@@ -1,7 +1,9 @@
-from contextlib import contextmanager
 import mysql.connector
 from mysql.connector import Error
+from contextlib import contextmanager
 from config.init import load_db_config
+from core.exceptions import DatabaseError
+
 
 class DatabaseManager:
     """
@@ -18,24 +20,21 @@ class DatabaseManager:
         return cls._instance
 
     def get_connection(self):
-        """
-        Retrieves or initializes an active MySQL database connection.
-        """
+        """Retrieves or initializes an active MySQL connection."""
         try:
             if self._connection is None or not self._connection.is_connected():
                 self._connection = mysql.connector.connect(**self._config)
             return self._connection
         except Error as e:
-            raise Exception(f"Failed to connect to MySQL database: {e}")
+            raise DatabaseError(f"Failed to connect to MySQL database: {e}")
 
     @contextmanager
     def get_cursor(self, dictionary=True, commit=False):
         """
         Context manager to automatically manage cursor lifecycle and transactions.
-        
         Usage:
             with db_manager.get_cursor(commit=True) as cursor:
-                cursor.execute("SELECT * FROM tbl_users")
+                cursor.execute("SELECT * FROM tbl_users WHERE user_id = %s", (user_id,))
         """
         conn = self.get_connection()
         cursor = conn.cursor(dictionary=dictionary)
@@ -45,7 +44,7 @@ class DatabaseManager:
                 conn.commit()
         except Error as e:
             conn.rollback()
-            raise Exception(f"Database operation failed: {e}")
+            raise DatabaseError(f"Database query execution failed: {e}")
         finally:
             cursor.close()
 

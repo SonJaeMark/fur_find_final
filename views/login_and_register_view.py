@@ -13,7 +13,7 @@ class RoundedCanvasFrame(tk.Canvas):
         self.bind("<Configure>", self._draw)
 
     def _draw(self, event=None):
-        self.delete("all")
+        self.delete("background")
         width = self.winfo_width()
         height = self.winfo_height()
         if width <= 1 or height <= 1:
@@ -42,7 +42,8 @@ class RoundedCanvasFrame(tk.Canvas):
             kw["outline"] = self.border_color
             kw["width"] = self.border_width
 
-        self.create_polygon(points, **kw)
+        self.create_polygon(points, tags="background", **kw)
+        self.tag_lower("background")
 
 
 class RoundedEntry(RoundedCanvasFrame):
