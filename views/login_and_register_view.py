@@ -272,7 +272,7 @@ class LoginAndRegisterView(tk.Frame):
         role_container.pack(fill="x", pady=(0, 14))
 
         self.role_var = tk.StringVar(value="Pet Owner")
-        role_dropdown = ttk.Combobox(role_container, textvariable=self.role_var, values=["Pet Owner", "Finder", "Admin", "Super Admin"], state="readonly")
+        role_dropdown = ttk.Combobox(role_container, textvariable=self.role_var, values=["Pet Owner"], state="readonly")
         role_dropdown.pack(fill="both", expand=True, padx=6, pady=4)
 
         btn_reg = RoundedCanvasFrame(self.register_frame, bg_color="#18181B", corner_radius=6, height=38, cursor="hand2")

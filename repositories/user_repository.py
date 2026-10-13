@@ -6,6 +6,21 @@ from models.user import User, PetOwner, Admin, SuperAdmin
 class UserRepository(BaseRepository):
     """Data Access Object for user table operations."""
 
+    ROLE_IDS = {"Pet Owner": 1, "Admin": 2, "Super Admin": 3}
+
+    def get_by_email_or_username(self, value: str) -> Optional[User]:
+        return self.get_by_email(value)
+
+    def update_user_status(self, user_id: int, is_active: bool) -> bool:
+        status = "Active" if is_active else "Suspended"
+        self.execute_query("UPDATE tbl_users SET status = %s WHERE user_id = %s", (status, user_id), commit=True)
+        return True
+
+    def update_user_role(self, user_id: int, role_name: str) -> bool:
+        self.execute_query("UPDATE tbl_users SET role_id = %s WHERE user_id = %s",
+                           (self.ROLE_IDS[role_name], user_id), commit=True)
+        return True
+
     def _map_row_to_user(self, row: Dict[str, Any]) -> Optional[User]:
         """Factory mapper that constructs concrete User objects based on role_id."""
         if not row:

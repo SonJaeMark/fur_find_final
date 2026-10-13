@@ -7,6 +7,14 @@ from core.exceptions import ValidationError, DatabaseError
 class MatchController:
     """Manages match queue processing, admin approvals, rejections, and final case closures."""
 
+    def get_pending_details(self) -> list[dict]:
+        """Pending matches joined with both reports (for the admin queue view)."""
+        return self.match_repo.get_detailed_by_status("Pending Admin Verification")
+
+    def get_user_matches(self, user_id: int) -> list[dict]:
+        """All matches touching a user's reports (for the Pet Owner view)."""
+        return self.match_repo.get_detailed_for_user(user_id)
+    
     def __init__(self, match_repo: MatchRepository = None, report_repo: ReportRepository = None, audit_repo: AuditRepository = None):
         self.match_repo = match_repo or MatchRepository()
         self.report_repo = report_repo or ReportRepository()

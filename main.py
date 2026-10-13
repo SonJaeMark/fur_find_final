@@ -34,7 +34,8 @@ def main():
         
         print("[+] System setup completed successfully. Launching application...")
         
-        # UI launching logic (Tkinter View) will go here...
+        from app import FurFindApp
+        FurFindApp().mainloop()
 
     except Exception as e:
         logging.error(f"Initialization Failed: {str(e)}")
